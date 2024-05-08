@@ -1,4 +1,3 @@
-import asyncio
 from functools import wraps
 from cachetools import TTLCache
 from typing import Callable, Union
@@ -30,7 +29,6 @@ def ratelimiter(func: Callable) -> Callable:
         is_limited = await ratelimit.acquire(userid)
 
         if is_limited and userid not in warned_users:
-
             if isinstance(update, Message):
                 await update.reply_text(warning_message)
                 warned_users[userid] = 1
@@ -41,8 +39,10 @@ def ratelimiter(func: Callable) -> Callable:
                 warned_users[userid] = 1
                 return
 
-        elif is_limited and userid in warned_users: pass
-        else: return await func(client, update)
+        elif is_limited and userid in warned_users:
+            pass
+        else:
+            return await func(client, update)
 
     return decorator
 
@@ -66,7 +66,7 @@ def errors(func: Callable) -> Callable:
     """
 
     @wraps(func)
-    async def decorator(client, message, *args,**kwargs):
+    async def decorator(client, message, *args, **kwargs):
         try:
             return await func(client, message, *args, **kwargs)
         except Exception as error:
@@ -92,5 +92,5 @@ def run_sync_in_thread(func: Callable) -> Callable:
     @wraps(func)
     async def wrapper(*args, **kwargs):
         return await loop.run_in_executor(None, func, *args, **kwargs)
-    
+
     return wrapper

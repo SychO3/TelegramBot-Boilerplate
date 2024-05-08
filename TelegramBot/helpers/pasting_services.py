@@ -17,11 +17,12 @@ async def katbin_paste(text: str) -> str:
         paste_post = await client.post(
             katbin_url,
             data={"_csrf_token": csrf_token, "paste[content]": text},
-            follow_redirects=False)
+            follow_redirects=False,
+        )
         output_url = f"{katbin_url}{paste_post.headers['location']}"
         await client.aclose()
         return output_url
-    except:
+    except BaseException:
         return "something went wrong while pasting text in katb.in."
 
 
@@ -31,28 +32,30 @@ async def telegraph_paste(content: str, title="TelegramBot") -> str:
     """
 
     telegraph = Telegraph(domain="graph.org")
-    
+
     await telegraph.create_account(short_name=title)
     html_content = "<pre>" + content.replace("\n", "<br>") + "</pre>"
     try:
         response = await telegraph.create_page(title=title, html_content=html_content)
         response = response["url"]
-    except:
+    except BaseException:
         response = await katbin_paste(content)
 
-    try: await telegraph.revoke_access_token()
-    except: pass
+    try:
+        await telegraph.revoke_access_token()
+    except BaseException:
+        pass
     return response
 
 
 async def telegraph_image_paste(filepath: str) -> str:
     """
-	paste the image in telegra.ph (graph.org) website. 
-	"""
+    paste the image in telegra.ph (graph.org) website.
+    """
+
     telegraph = Telegraph(domain="graph.org")
     try:
         image_url = await telegraph.upload_file(filepath)
         return "https://graph.org/" + image_url[0]["src"]
-    except Exception as error:
+    except Exception:
         return "something went wrong while posting image."
-	

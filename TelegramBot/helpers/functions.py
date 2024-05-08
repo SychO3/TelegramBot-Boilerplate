@@ -2,7 +2,6 @@ from pyrogram.enums import ChatMemberStatus, ChatType
 from pyrogram.types import Message
 
 from TelegramBot.config import SUDO_USERID
-from typing import Union 
 
 
 async def isAdmin(message: Message) -> bool:
@@ -20,7 +19,10 @@ async def isAdmin(message: Message) -> bool:
         return True
 
     check_status = await message.chat.get_member(user_id)
-    return check_status.status in [ChatMemberStatus.OWNER,ChatMemberStatus.ADMINISTRATOR]
+    return check_status.status in [
+        ChatMemberStatus.OWNER,
+        ChatMemberStatus.ADMINISTRATOR,
+    ]
 
 
 def get_readable_time(seconds: int) -> str:

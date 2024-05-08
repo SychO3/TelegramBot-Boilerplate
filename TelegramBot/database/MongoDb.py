@@ -12,7 +12,7 @@ from TelegramBot.logging import LOGGER
 class MongoDb:
     """
     MongoDb class to help with basic CRUD ( Create, Read, Delete, Update)
-    operations of documents for a specific collection. 
+    operations of documents for a specific collection.
     """
 
     def __init__(self, collection):
@@ -29,13 +29,15 @@ class MongoDb:
         Update as well as create document from document_id.
         """
         updated_data = {"$set": updated_data}
-        await self.collection.update_one({"_id": document_id}, updated_data, upsert=True)
+        await self.collection.update_one(
+            {"_id": document_id}, updated_data, upsert=True
+        )
 
     async def delete_document(self, document_id):
         """
         Delete the document using document_id from collection.
         """
-        await self.collection.delete_one({'_id': document_id})
+        await self.collection.delete_one({"_id": document_id})
 
     async def total_documents(self):
         """
@@ -54,9 +56,10 @@ async def check_mongo_uri(MONGO_URI: str) -> None:
     try:
         mongo = AsyncIOMotorClient(MONGO_URI)
         await mongo.server_info()
-    except:
+    except BaseException:
         LOGGER(__name__).error(
-            "Error in Establishing connection with MongoDb URI. Please enter valid uri in the config section.")
+            "Error in Establishing connection with MongoDb URI. Please enter valid uri in the config section."
+        )
         exiter(1)
 
 
