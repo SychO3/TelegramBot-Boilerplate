@@ -16,7 +16,7 @@ from pyrogram.types import (
 
 from TelegramBot.helpers.decorators import ratelimiter
 from TelegramBot.helpers.filters import dev_cmd
-from TelegramBot.logging import LOGGER
+from TelegramBot.logging import log
 
 
 @Client.on_message(filters.command(["shell", "sh"]) & dev_cmd)
@@ -39,7 +39,7 @@ async def shell(_, message: Message):
         stdout, stderr = await shell.communicate()
         result = str(stdout.decode().strip()) + str(stderr.decode().strip())
     except Exception as error:
-        LOGGER(__name__).warning(f"{error}")
+        log(__name__).warning(f"{error}")
         return await shell_replymsg.edit(f"Error :-\n\n{error}")
 
     if len(result) > 4000:

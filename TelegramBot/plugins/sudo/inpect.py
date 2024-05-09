@@ -1,4 +1,4 @@
-from pyrogram.types import Message 
+from pyrogram.types import Message
 from pyrogram import Client, filters
 from pyrogram.errors import MessageTooLong
 
@@ -13,9 +13,9 @@ async def inspect(_, message: Message):
     """
     inspects the message and give reply in json format.
     """
-    
+
     try:
-        return await message.reply_text(message, quote=True)
+        return await message.reply_text(f"`{message}`", quote=True)
     except MessageTooLong:
-        output = await katbin_paste(message)
+        output = await katbin_paste(str(message))
         return await message.reply_text(output, quote=True)

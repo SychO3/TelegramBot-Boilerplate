@@ -5,7 +5,7 @@ from speedtest import Speedtest
 from TelegramBot.helpers.decorators import ratelimiter, run_sync_in_thread
 from TelegramBot.helpers.functions import get_readable_bytes
 from TelegramBot.helpers.filters import sudo_cmd
-from TelegramBot.logging import LOGGER
+from TelegramBot.logging import log
 
 
 @run_sync_in_thread
@@ -24,10 +24,13 @@ async def speedtest(_, message: Message):
     """
     Give speedtest of the server where bot is running.
     """
-    
+
     speed = await message.reply("Running speedtest....", quote=True)
-    LOGGER(__name__).info("Running speedtest....")
-    result = await speedtestcli()
+    log(__name__).info("Running speedtest....")
+    try:
+        result = await speedtestcli()
+    except BaseException:
+        return await speed.edit("Speedtest failed.")
 
     speed_string = f"""
 Upload: {get_readable_bytes(result["upload"] / 8)}/s
@@ -37,4 +40,5 @@ ISP: {result["client"]["isp"]}
 """
     await speed.delete()
     return await message.reply_photo(
-        photo=result["share"], caption=speed_string, quote=True)
+        photo=result["share"], caption=speed_string, quote=True
+    )

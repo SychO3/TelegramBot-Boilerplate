@@ -25,7 +25,7 @@ async def isAdmin(message: Message) -> bool:
     ]
 
 
-def get_readable_time(seconds: int) -> str:
+def get_readable_time(seconds: int | float) -> str:
     """
     Return a human-readable time format
     """
@@ -52,7 +52,7 @@ def get_readable_time(seconds: int) -> str:
     return result
 
 
-def get_readable_bytes(size: str) -> str:
+def get_readable_bytes(size: str | int) -> str:
     """
     Return a human readable file size from bytes.
     """

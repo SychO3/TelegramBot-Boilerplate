@@ -6,7 +6,7 @@ from pyrogram.types import Message
 from TelegramBot.database import MongoDb
 from TelegramBot.helpers.decorators import ratelimiter
 from TelegramBot.helpers.filters import dev_cmd
-from TelegramBot.logging import LOGGER
+from TelegramBot.logging import log
 
 
 @Client.on_message(filters.command(["broadcast"]) & dev_cmd)
@@ -65,7 +65,7 @@ async def broadcast(_: Client, message: Message):
             # preventing flood wait
             await sleep(0.3)
         except Exception as error:
-            LOGGER(__name__).error(str(error))
+            log(__name__).error(str(error))
             failed += 1
 
     return await proses_msg.edit(

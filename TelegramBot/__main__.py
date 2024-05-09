@@ -1,6 +1,6 @@
 from TelegramBot import bot
-from TelegramBot.logging import LOGGER
+from TelegramBot.logging import log
 
-LOGGER(__name__).info("client successfully initiated....")
+log(__name__).info("client successfully initiated....")
 if __name__ == "__main__":
     bot.run()
