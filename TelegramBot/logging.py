@@ -17,6 +17,6 @@ logger.add(
 )
 
 
-def log(name: str):
+def log(name: str = None):
     # 这个函数通过loguru来绑定一个额外的上下文，以模仿传统的命名日志记录器
     return logger.bind(name=name)
