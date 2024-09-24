@@ -1,25 +1,27 @@
 import sys
 import time
 from asyncio import get_event_loop, new_event_loop, set_event_loop
-import uvloop
 
 from pyrogram import Client
+
 from TelegramBot import config
-from TelegramBot.database.MongoDb import check_mongo_uri
+from TelegramBot.database.MysqlDb import check_mysql_url, mysql_database
 from TelegramBot.logging import log
 
+if sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
+    import uvloop
 
-uvloop.install()
+    uvloop.install()
+    log(__name__).info("uvloop is installed.")
+
 log(__name__).info("Starting TelegramBot....")
 BotStartTime = time.time()
 
 
-if sys.version_info[0] < 3 or sys.version_info[1] < 10:
-    log(__name__).critical("""
-=============================================================
-You MUST need to be on python 3.10 or above, shutting down the bot...
-=============================================================
-""")
+if sys.version_info[0] < 3 or sys.version_info[1] < 11:
+    log(__name__).critical(
+        "You MUST need to be on python 3.11 or above, shutting down the bot..."
+    )
     sys.exit(1)
 
 
@@ -31,24 +33,10 @@ except RuntimeError:
     loop = get_event_loop()
 
 
-# logger(__name__).info(
-#     r"""
-# ____________________________________________________________________
-# |  _______   _                                ____        _        |
-# | |__   __| | |                              |  _ \      | |       |
-# |    | | ___| | ___  __ _ _ __ __ _ _ __ ___ | |_) | ___ | |_      |
-# |    | |/ _ \ |/ _ \/ _` | '__/ _` | '_ ` _ \|  _ < / _ \| __|     |
-# |    | |  __/ |  __/ (_| | | | (_| | | | | | | |_) | (_) | |_      |
-# |    |_|\___|_|\___|\__, |_|  \__,_|_| |_| |_|____/ \___/ \__|     |
-# |                    __/ |                                         |
-# |__________________________________________________________________|
-# """)
-# # https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20
-
-
 log(__name__).info("initiating the client....")
 log(__name__).info("checking MongoDb URI....")
-loop.run_until_complete(check_mongo_uri(config.MONGO_URI))
+loop.run_until_complete(check_mysql_url(config.MYSQL_URI))
+loop.run_until_complete(mysql_database.ensure_pool())
 
 
 # https://docs.pyrogram.org/topics/smart-plugins

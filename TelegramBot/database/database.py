@@ -2,7 +2,11 @@ from datetime import datetime
 
 from pyrogram.types import User
 
-from TelegramBot.database import MongoDb as db
+from TelegramBot.database.MysqlDb import mysql_database as db
+
+from prestool.PresMySql import SqlStr
+
+s = SqlStr()
 
 
 async def save_user(user: User):
@@ -11,11 +15,14 @@ async def save_user(user: User):
     """
 
     insert_format = {
-        "name": user.full_name,
+        "id": user.id,
+        "full_name": user.full_name,
         "username": user.username,
-        "date": datetime.now(),
+        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
-    await db.users.update_document(user.id, insert_format)
+
+    sql = s.insert_sql_str("users", insert_format)
+    await db.execute(sql)
 
 
 async def save_chat(chat_id: int):
@@ -24,4 +31,5 @@ async def save_chat(chat_id: int):
     """
 
     insert_format = {"date": datetime.now()}
-    await db.chats.update_document(chat_id, insert_format)
+    sql = s.insert_sql_str("chats", insert_format)
+    await db.execute(sql)

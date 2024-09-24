@@ -1,19 +1,31 @@
-import json
 from os import getenv
+
 from dotenv import load_dotenv
 
-load_dotenv("config.env")
+load_dotenv(".env")
 
 API_ID = int(getenv("API_ID"))
 API_HASH = getenv("API_HASH")
 BOT_TOKEN = getenv("BOT_TOKEN")
 
-OWNER_USERID = json.loads(getenv("OWNER_USERID"))
+OWNER_USERID = [int(i) for i in getenv("OWNER_USERID").split(",")]
+
 SUDO_USERID = OWNER_USERID
+
 try:
-    SUDO_USERID += json.loads(getenv("SUDO_USERID"))
-except BaseException:
+    SUDO_USERID += [int(i) for i in getenv("SUDO_USERID").split(",")]
+except ValueError:
     pass
+
 SUDO_USERID = list(set(SUDO_USERID))
 
-MONGO_URI = getenv("MONGO_URI")
+MYSQL_HOST = getenv("MYSQL_HOST")
+MYSQL_PORT = int(getenv("MYSQL_PORT"))
+MYSQL_USER = getenv("MYSQL_USER")
+MYSQL_PASS = getenv("MYSQL_PASS")
+MYSQL_NAME = getenv("MYSQL_NAME")
+
+
+MYSQL_URI = (
+    f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASS}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_NAME}"
+)
