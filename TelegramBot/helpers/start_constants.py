@@ -1,4 +1,9 @@
-from TelegramBot.version import (__python_version__, __version__, __pyro_version__, __license__)
+from TelegramBot.version import (
+    __python_version__,
+    __version__,
+    __pyro_version__,
+    __license__,
+)
 
 USER_TEXT = """
 🗒️ Documentation for commands available to user's 

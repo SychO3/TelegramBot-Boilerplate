@@ -24,6 +24,7 @@ beautifulsoup4 = "^4.12.3"
 loguru = "^0.7.2"
 aiomysql = "^0.2.0"
 prestool = "^0.0.46"
+apscheduler = "^3.10.4"
 
 
 [tool.poetry.group.dev.dependencies]
