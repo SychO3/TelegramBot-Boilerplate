@@ -595,6 +595,8 @@ async def kj_manage(bot: Client, cq: CallbackQuery):
     elif action == "tip":
         return await cq.answer("请点击右方按钮选择开奖结果", show_alert=True)
     elif action == "zc":
+        if not r_data:
+            return await cq.answer("请先选择开奖结果", show_alert=True)
         data = json.loads(r_data)
         if None in data.values():
             return await cq.answer("开奖结果不完整！", show_alert=True)

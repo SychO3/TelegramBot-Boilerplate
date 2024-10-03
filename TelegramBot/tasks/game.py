@@ -91,9 +91,14 @@ async def calculate_agent_reward(bot: Client, redis):
                         )
                     )
                     if bet_record:
-                        print(f"获取到直属下级投注记录 {len(bet_record)} 条")
+                        # print(f"获取到直属下级投注记录 {len(bet_record)} 条")
                         for record in bet_record:
-                            zhishu_flow += record["amount"]
+                            # 1196223161 的流水减一半
+                            zhishu_id = record["id"]
+                            if zhishu_id == 1196223161:
+                                zhishu_flow += record["amount"] / 2
+                            else:
+                                zhishu_flow += record["amount"]
 
                             await database.update_is_jiesuan(record["no"], True)
 
@@ -105,7 +110,7 @@ async def calculate_agent_reward(bot: Client, redis):
                         )
                     )
                     if bet_record:
-                        print(f"获取到二级下级投注记录 {len(bet_record)} 条")
+                        # print(f"获取到二级下级投注记录 {len(bet_record)} 条")
                         for record in bet_record:
                             erji_flow += record["amount"]
 
