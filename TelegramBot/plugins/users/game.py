@@ -1168,6 +1168,10 @@ async def cancel_bet(bot: Client, message: Message):
     cancelled_bets = []
     total_refund = 0
 
+    # 检查是否封盘
+    if not data.get("bet"):
+        return await message.reply_text("已封盘，无法取消投注")
+
     # 分离当前用户的投注和其他用户的投注
     new_betdata = []
     for bet in betdata:
