@@ -350,9 +350,9 @@ EMOJI_TO_ANIMAL = {
     "🐟": "鱼",
     "🐘": "象",
     "🦐": "虾",
-    "虎": "老虎",
     "🐓": "鸡",
-    "龟": "乌龟",
+    "乌龟": "龟",
+    "老虎": "虎",
 }
 
 ANIMAL_PATTERN = (
@@ -363,7 +363,12 @@ ANIMAL_PATTERN = (
 @Client.on_message(game_group & filters.regex(rf"^{ANIMAL_PATTERN}"))
 async def game_bet(_, m: Message):
     # 下注格式 单行 或者 多行
-    bet_text = m.text.split("\n")
+    text = m.text
+
+    # bet_text = text.replace("老虎","虎").replace("乌龟","龟")
+    # print(bet_text)
+
+    bet_text = text.split("\n")
     for bet in bet_text:
         try:
             amount = re.search(r"\d+", bet).group()
@@ -376,10 +381,8 @@ async def game_bet(_, m: Message):
                 EMOJI_TO_ANIMAL.get(animal, animal) for animal in xiazhu
             ]  # 将emoji转换为汉字
 
-            # bet = bet.replace("🐓", "鸡")
-            # bet = bet.replace("老虎", "虎")
-            # xiazhu = [animal.replace("🐓", "鸡") for animal in xiazhu]
-            xiazhu = [animal.replace("老虎", "虎") for animal in xiazhu]
+            # xiazhu = [animal.replace("老虎", "虎") for animal in xiazhu]
+            # xiazhu = [animal.replace("乌龟", "龟") for animal in xiazhu]
 
             xiazhu = "".join(dict.fromkeys(xiazhu))  # 去重
 
@@ -502,12 +505,6 @@ async def admin_manage(bot: Client, cq: CallbackQuery):
         data = {"1": None, "2": None, "3": None}
 
         await redis.set(kj_key, json.dumps(data))
-
-
-# 虎|龟|鸡|鱼|象|虾
-# kj_button = ikb([
-#     [("位置一👉", "kj"), ("虎")
-# ])
 
 
 async def kj_button(qihao, r):
