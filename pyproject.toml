@@ -25,6 +25,7 @@ loguru = "^0.7.2"
 aiomysql = "^0.2.0"
 prestool = "^0.0.46"
 apscheduler = "^3.10.4"
+cryptography = "^43.0.1"
 
 
 [tool.poetry.group.dev.dependencies]

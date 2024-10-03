@@ -124,12 +124,18 @@ async def game_start(bot: Client, m: Message):
     a_button = await a_button_(qihao)
 
     for sudo in SUDO_USERID:
-        await bot.send_message(sudo, a_text, reply_markup=a_button)
+        try:
+            await bot.send_message(sudo, a_text, reply_markup=a_button)
+        except Exception as e:
+            log(__name__).error(f"发送管理员操作面板失败：{e}")
         await asyncio.sleep(1)
 
-    await bot.set_chat_permissions(
-        config.GAME_GROUP_ID, permissions=ChatPermissions(all_perms=True)
-    )
+    try:
+        await bot.set_chat_permissions(
+            config.GAME_GROUP_ID, permissions=ChatPermissions(all_perms=True)
+        )
+    except Exception as e:
+        log(__name__).error(f"设置群组权限失败：{e}")
 
 
 # 关群
@@ -153,9 +159,12 @@ async def game_end(bot: Client, m: Message):
     await m.reply_text(text, reply_markup=button, quote=False)
 
     # 群组设置为禁言
-    await bot.set_chat_permissions(
-        config.GAME_GROUP_ID, permissions=ChatPermissions(all_perms=False)
-    )
+    try:
+        await bot.set_chat_permissions(
+            config.GAME_GROUP_ID, permissions=ChatPermissions(all_perms=False)
+        )
+    except Exception as e:
+        log(__name__).error(f"设置群组权限失败：{e}")
 
 
 async def a_text_(game_data):
@@ -341,7 +350,10 @@ EMOJI_TO_ANIMAL = {
     "🐟": "鱼",
     "🐘": "象",
     "🦐": "虾",
+    "虎": "老虎",
+    "🐓": "鸡",
 }
+
 ANIMAL_PATTERN = (
     f"({'|'.join(list(EMOJI_TO_ANIMAL.keys()) + list(EMOJI_TO_ANIMAL.values()))})"
 )
@@ -356,10 +368,18 @@ async def game_bet(_, m: Message):
             amount = re.search(r"\d+", bet).group()
             amount = int(amount)
 
+            # 老虎 替换 为 虎
+
             xiazhu = re.findall(ANIMAL_PATTERN, bet)
             xiazhu = [
                 EMOJI_TO_ANIMAL.get(animal, animal) for animal in xiazhu
             ]  # 将emoji转换为汉字
+
+            # bet = bet.replace("🐓", "鸡")
+            # bet = bet.replace("老虎", "虎")
+            # xiazhu = [animal.replace("🐓", "鸡") for animal in xiazhu]
+            xiazhu = [animal.replace("老虎", "虎") for animal in xiazhu]
+
             xiazhu = "".join(dict.fromkeys(xiazhu))  # 去重
 
             if bet[-1] in ["w", "W", "万"]:
