@@ -8,6 +8,10 @@ from TelegramBot import config
 from TelegramBot.database.MysqlDb import check_mysql_url, mysql_database
 from TelegramBot.logging import log
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from TelegramBot.tasks.message import send_messages
+
+
 if sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
     import uvloop
 
@@ -48,3 +52,18 @@ bot = Client(
     bot_token=config.BOT_TOKEN,
     plugins=plugins,
 )
+
+
+scheduler = AsyncIOScheduler(timezone="Asia/Shanghai")
+scheduler.add_job(
+    send_messages,
+    "cron",
+    hour="*",
+    minute="0,30",
+    args=[
+        bot,
+    ],
+    max_instances=1,
+)
+# scheduler.add_job(send_messages, "interval", seconds=1, args=[bot, ], max_instances=1)
+scheduler.start()
